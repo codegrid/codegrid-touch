@@ -76,4 +76,4 @@ var unbindMoveAndEnd = function() {
   $document.off(currentEventNameSet.end, handleEnd);
 };
 
-$hitarea.on('touchstart mousedown', handleStart);
+$hitarea.on('touchstart mousedown', handleStart); // 両方設定
