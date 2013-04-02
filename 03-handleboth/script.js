@@ -8,14 +8,14 @@ var $y = $('#y');
 
 // 対応するイベント名を取得する関数
 
-var getRelatedEventNames = function(startEvent) {
-  if(startEvent === 'touchstart') {
+var getRelatedEventNames = function(eventName) {
+  if(eventName === 'touchstart') {
     return {
       move: 'touchmove',
       end: 'touchend'
     };
   }
-  if(startEvent === 'mousedown') {
+  if(eventName === 'mousedown') {
     return {
       move: 'mousemove',
       end: 'mouseup'
