@@ -7,9 +7,11 @@ var $x = $('#x');
 var $y = $('#y');
 
 // タッチイベントが利用可能かの判別
+
 var supportTouch = 'ontouchend' in document;
 
 // イベント名
+
 var EVENTNAME_TOUCHSTART = supportTouch ? 'touchstart' : 'mousedown';
 var EVENTNAME_TOUCHMOVE = supportTouch ? 'touchmove' : 'mousemove';
 var EVENTNAME_TOUCHEND = supportTouch ? 'touchend' : 'mouseup';
