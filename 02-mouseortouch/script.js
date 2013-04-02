@@ -46,16 +46,15 @@ $hitarea.on(EVENTNAME_TOUCHSTART, function(event) {
   touchStarted = true;
 });
 
-$hitarea.on(EVENTNAME_TOUCHMOVE, function(event) {
-  if(!touchStarted) {
-    return;
-  }
+$document.on(EVENTNAME_TOUCHMOVE, function(event) {
+  if(!touchStarted) { return; } // タッチ開始されていなければ関係なし
   event.preventDefault(); // タッチによる画面スクロールを止める
   updateEventname(EVENTNAME_TOUCHMOVE);
   updateXY(event);
 });
 
-$hitarea.on(EVENTNAME_TOUCHEND, function(event) {
+$document.on(EVENTNAME_TOUCHEND, function(event) {
+  if(!touchStarted) { return; } // タッチ開始されていなければ関係なし
   updateEventname(EVENTNAME_TOUCHEND);
   updateXY(event);
   $hitarea.css('background-color', 'blue');
