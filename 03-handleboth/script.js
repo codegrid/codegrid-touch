@@ -39,30 +39,26 @@ var updateEventname = function(eventname) {
 
 // イベント設定
 
-var handleStart = function(event) {
+var touchStarted = false; // タッチ中かどうかを保存しておく
+
+$hitarea.on(EVENTNAME_TOUCHSTART, function(event) {
   updateEventname(EVENTNAME_TOUCHSTART);
   updateXY(event);
   $hitarea.css('background-color', 'red');
-  bindMoveAndEnd();
-};
-var handleMove = function(event) {
+  touchStarted = true;
+});
+
+$document.on(EVENTNAME_TOUCHMOVE, function(event) {
+  if(!touchStarted) { return; } // タッチ開始されていなければ関係なし
   event.preventDefault(); // タッチによる画面スクロールを止める
   updateEventname(EVENTNAME_TOUCHMOVE);
   updateXY(event);
-};
-var handleEnd = function(event) {
+});
+
+$document.on(EVENTNAME_TOUCHEND, function(event) {
+  if(!touchStarted) { return; } // タッチ開始されていなければ関係なし
   updateEventname(EVENTNAME_TOUCHEND);
   updateXY(event);
   $hitarea.css('background-color', 'blue');
-  unbindMoveAndEnd();
-};
-var bindMoveAndEnd = function() {
-  $document.on(EVENTNAME_TOUCHMOVE, handleMove);
-  $document.on(EVENTNAME_TOUCHEND, handleEnd);
-};
-var unbindMoveAndEnd = function() {
-  $document.off(EVENTNAME_TOUCHMOVE, handleMove);
-  $document.off(EVENTNAME_TOUCHEND, handleEnd);
-};
-
-$hitarea.on(EVENTNAME_TOUCHSTART, handleStart);
+  touchStarted = false;
+});

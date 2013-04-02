@@ -14,8 +14,6 @@ html,body {
 	-moz-user-select:none;
 	-ms-user-select:none;
 	user-select:none;
-	/* windows8のスワイプ動作を禁止 */
-	-ms-touch-action:none;
 }
 #eventname {
 	margin: 0 0 8px;
