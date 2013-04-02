@@ -6,15 +6,22 @@ var $eventname = $('#eventname');
 var $x = $('#x');
 var $y = $('#y');
 
-// タッチイベントが利用可能かの判別
+// 対応するイベント名を取得する関数
 
-var supportTouch = 'ontouchend' in document;
-
-// イベント名
-
-var EVENTNAME_TOUCHSTART = supportTouch ? 'touchstart' : 'mousedown';
-var EVENTNAME_TOUCHMOVE = supportTouch ? 'touchmove' : 'mousemove';
-var EVENTNAME_TOUCHEND = supportTouch ? 'touchend' : 'mouseup';
+var getRelatedEventNames = function(startEvent) {
+  if(startEvent === 'touchstart') {
+    return {
+      move: 'touchmove',
+      end: 'touchend'
+    };
+  }
+  if(startEvent === 'mousedown') {
+    return {
+      move: 'mousemove',
+      end: 'mouseup'
+    };
+  }
+};
 
 // 表示をアップデートする関数群
 
@@ -39,26 +46,34 @@ var updateEventname = function(eventname) {
 
 // イベント設定
 
-var touchStarted = false; // タッチ中かどうかを保存しておく
+var currentEventNameSet; // イベント名情報を保存する変数
 
-$hitarea.on(EVENTNAME_TOUCHSTART, function(event) {
-  updateEventname(EVENTNAME_TOUCHSTART);
+var handleStart = function(event) {
+  event.preventDefault(); // 2度、開始イベントを起こさないようにする
+  currentEventNameSet = getRelatedEventNames(event.type);
+  updateEventname(event.type);
   updateXY(event);
   $hitarea.css('background-color', 'red');
-  touchStarted = true;
-});
-
-$document.on(EVENTNAME_TOUCHMOVE, function(event) {
-  if(!touchStarted) { return; } // タッチ開始されていなければ関係なし
-  event.preventDefault(); // タッチによる画面スクロールを止める
-  updateEventname(EVENTNAME_TOUCHMOVE);
+  bindMoveAndEnd();
+};
+var handleMove = function(event) {
+  updateEventname(currentEventNameSet.move);
   updateXY(event);
-});
-
-$document.on(EVENTNAME_TOUCHEND, function(event) {
-  if(!touchStarted) { return; } // タッチ開始されていなければ関係なし
-  updateEventname(EVENTNAME_TOUCHEND);
+};
+var handleEnd = function(event) {
+  updateEventname(currentEventNameSet.end);
   updateXY(event);
   $hitarea.css('background-color', 'blue');
-  touchStarted = false;
-});
+  unbindMoveAndEnd();
+  currentEventNameSet = null;
+};
+var bindMoveAndEnd = function() {
+  $document.on(currentEventNameSet.move, handleMove);
+  $document.on(currentEventNameSet.end, handleEnd);
+};
+var unbindMoveAndEnd = function() {
+  $document.off(currentEventNameSet.move, handleMove);
+  $document.off(currentEventNameSet.end, handleEnd);
+};
+
+$hitarea.on('touchstart mousedown', handleStart);
